@@ -14,3 +14,7 @@ nyctransit_df = read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv")
 nyctransit_df = janitor::clean_names(nyctransit_df)
 nyctransit_df #1,868 entries and 32 columns
 ```
+
+```{r summary, include = FALSE}
+summary(nyctransit_df) #Overview of dataset.Tells us how many of each variable contains "NA".
+```
