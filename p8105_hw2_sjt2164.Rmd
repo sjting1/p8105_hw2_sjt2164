@@ -1,0 +1,16 @@
+---
+title: "Homework 2"
+output: github_document
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+```
+
+## Problem 1
+
+```{r data, include = FALSE}
+nyctransit_df = read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv")
+nyctransit_df = janitor::clean_names(nyctransit_df)
+nyctransit_df #1,868 entries and 32 columns
+```
