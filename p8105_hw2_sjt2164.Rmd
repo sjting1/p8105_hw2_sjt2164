@@ -129,13 +129,13 @@ reformat =
   ) 
 ```
 
-```{r trainA stations}
+```{r trainA stations, include = FALSE}
 trainA_ada = distinct(reformat, station_name_fc)
 ```
 
 After reformatting the data, we find that 56 distinct stations serve the A train. 
 
-```{r trainA ada}
+```{r trainA ada, include = FALSE}
 ada_compli = reformat |>
     filter(ada == TRUE) |>
     distinct(station_name)
