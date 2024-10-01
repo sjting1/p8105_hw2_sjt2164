@@ -2,19 +2,24 @@
 title: "Homework 2"
 output: github_document
 ---
-
+_Note: This homework uses the `tidyverse` and `dplyr` libraries._
 ```{r setup, include = FALSE}
 library(tidyverse)
+library(dplyr)
 ```
 
 ## Problem 1
 
 ```{r data, include = FALSE}
 nyctransit_df = read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv")
-nyctransit_df = janitor::clean_names(nyctransit_df)
-nyctransit_df #1,868 entries and 32 columns
+nyctransit_df #1,868 entries and 32 columns.
 ```
 
+The `nyctransit_df` dataset (`r ncol(nyctransit_df)` columns x `r nrow(nyctransit_df)` rows) was created based on the _"NYC_Transit_Subway_Entrance_And_Exit_Data.csv"_ file.
+
 ```{r summary, include = FALSE}
-summary(nyctransit_df) #Overview of dataset.Tells us how many of each variable contains "NA".
+summary(nyctransit_df)
+nyctransit_df = janitor::clean_names(nyctransit_df) #transform variable names to snake case
 ```
+
+After reading the `nyctransit_df` dataset and taking a look at its 32 variables with `summary(nyctransit_df)`, I applied the snake case convention to the variable names using `clean_names` from the `janitor` package. 
