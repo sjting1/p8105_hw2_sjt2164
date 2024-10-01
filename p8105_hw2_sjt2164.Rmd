@@ -23,3 +23,18 @@ nyctransit_df = janitor::clean_names(nyctransit_df) #transform variable names to
 ```
 
 After reading the `nyctransit_df` dataset and taking a look at its 32 variables with `summary(nyctransit_df)`, I applied the snake case convention to the variable names using `clean_names` from the `janitor` package. 
+
+```{r select, include = FALSE}
+nyctransit_q1 = 
+  select(nyctransit_df, line:entry, vending, ada) |>
+   mutate(
+     entry = ifelse(entry == "YES", TRUE, FALSE)
+     ) #convert entry to logical variable
+
+nyctransit_q1 #1,868 entries and 19 columns. 11 character, 2 logical and 6 double variables
+summary(nyctransit_q1)
+```
+
+Using the `select()` function, I selected my variables of interest and converted the `entry` variable in this dataset from character (YES vs NO) to a logical variable (TRUE vs. FALSE). 
+
+The resulting `nyctransit_q1` dataset has 19 columns and 1,868 rows. The 19 variables include 11 characters, 2 logicals, and 6 doubles. 
