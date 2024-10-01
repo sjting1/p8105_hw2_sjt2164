@@ -90,7 +90,7 @@ The 6 double variables are `station_latitude`, `station_longitude`, and `route8`
   
 The data in `nyctransit_q1` is not tidy. For example, Routes 8 to 11 were entered as doubles but specific train numbers are entered in these columns. Similarly, character variables such as `line`, `entrance_type`, `vending`, and `route1` to `route7` are categorical variables and could be converted to factors.
 
-#### Problem 1 Questions
+#### Problem 1 Question Answers
 
 ```{r station, include = FALSE}
 levels(pull(nyctransit_fc,station_name_fc)) #can also use distinct function
@@ -98,15 +98,15 @@ levels(pull(nyctransit_fc,station_name_fc)) #can also use distinct function
 station = distinct(nyctransit_fc,station_name) #another option: 356 stations
 ```
 
-There are 356 distinct stations. 73 out of the 356 stations are ADA compliant. 38.46% of station entrances/exits without vending allow entrance. 
-```{r ada stations, include = FALSE}}
+There are 356 distinct stations. 73 out of the 356 stations are ADA compliant. Of the 36 distinct stations that have entrances/exits without vending, 16 (44.44%) allow entrance. 
+
+```{r ada stations, include = FALSE}
 nyctransit_ada = filter(nyctransit_fc, ada == "TRUE")
 ada = distinct(nyctransit_ada,station_name) #73 distinct stations
 ```
 
-```{r vending, include = FALSE}}
-nyctransit_ent = filter(nyctransit_stn, vending_fc == "NO") #117 entrance/exits w/o vending
-summary(nyctransit_ent) #Entry: 72 FALSE and 45 TRUE
+```{r vending, include = FALSE}
+nyctransit_ent = filter(nyctransit_ada, vending_fc == "NO") #36 stations with entrance/exits w/o vending
+summary(nyctransit_ent) #Entry: 20 FALSE and 16 TRUE
 ```
-
 
