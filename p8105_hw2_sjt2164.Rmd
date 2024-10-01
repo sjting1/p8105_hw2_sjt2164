@@ -148,16 +148,31 @@ Of the stations that serve the A train, 16 are ADA compliant.
 
 ## Problem 2
 
-Problem 2 uses the _"202309 Trash Wheel Collection Data"_ xlsx file from Mr. Trash Wheel. The dataset was imported as `mr_trash`.
+Problem 2 uses the _"202309 Trash Wheel Collection Data"_ xlsx file from Mr. Trash Wheel. The Mr. Trash Wheel sheet has been read, cleaned, and imported as `mr_trash`.
 
-```{r trash setup, include = FALSE}
-mr_trash = read_excel("data/202309 Trash Wheel Collection Data.xlsx", sheet = "Mr. Trash Wheel", n_max = 584) #584r x 16c
-
-mr_trash = janitor::clean_names(mr_trash) |>
+```{r mrtrash setup, include = FALSE}
+mr_trash = read_excel("data/202309 Trash Wheel Collection Data.xlsx", sheet = "Mr. Trash Wheel", n_max = 584) |>
+janitor::clean_names() |>
   select(dumpster:homes_powered) |> 
-  mutate(
-    sports_balls_int = as.integer(sports_balls)) 
+  mutate(sports_balls = as.integer(sports_balls)) 
 
 summary(mr_trash) #584c x 14c
 ```
+
+The Professor Trash Wheel sheet has been read, cleaned, and imported as `prof_trash`.
+```{r proftrash setup, include = FALSE}
+prof_trash = read_excel("data/202309 Trash Wheel Collection Data.xlsx", sheet = "Professor Trash Wheel", n_max = 106) |>
+janitor::clean_names() 
+
+summary(prof_trash) #106r x 13c
+```
+
+The Gwynnda Trash Wheel sheet has been read, cleaned, and imported as `gwynnda_trash`.
+```{r gwynndatrash setup, include = FALSE}
+gwynnda_trash = read_excel("data/202309 Trash Wheel Collection Data.xlsx", sheet = "Gwynnda Trash Wheel", n_max = 157) |>
+janitor::clean_names() 
+
+summary(gwynnda_trash) #157r x 12c
+```
+
 
