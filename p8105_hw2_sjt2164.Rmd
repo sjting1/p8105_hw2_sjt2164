@@ -12,7 +12,7 @@ library(readxl)
 ## Problem 1
 
 ```{r data, include = FALSE}
-nyctransit_df = read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv")
+nyctransit_df = read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv", na = c("NA", "", "."))
 nyctransit_df #1,868 entries and 32 columns.
 ```
 
@@ -151,28 +151,31 @@ Of the stations that serve the A train, 16 are ADA compliant.
 Problem 2 uses the _"202309 Trash Wheel Collection Data"_ xlsx file from Mr. Trash Wheel. The Mr. Trash Wheel sheet has been read, cleaned, and imported as `mr_trash`.
 
 ```{r mrtrash setup, include = FALSE}
-mr_trash = read_excel("data/202309 Trash Wheel Collection Data.xlsx", sheet = "Mr. Trash Wheel", n_max = 584) |>
+mr_trash = read_excel("data/202409 Trash Wheel Collection Data.xlsx", na = c("NA", "", "."), sheet = "Mr. Trash Wheel", n_max = 651) |>
 janitor::clean_names() |>
   select(dumpster:homes_powered) |> 
-  mutate(sports_balls = as.integer(sports_balls)) 
-
-summary(mr_trash) #584c x 14c
+  mutate(sports_balls = as.integer(sports_balls)) |>
+  add_column(trash_wheel_name = "Mr")
+  
+mr_trash #651c x 15c [large]
 ```
 
 The Professor Trash Wheel sheet has been read, cleaned, and imported as `prof_trash`.
 ```{r proftrash setup, include = FALSE}
-prof_trash = read_excel("data/202309 Trash Wheel Collection Data.xlsx", sheet = "Professor Trash Wheel", n_max = 106) |>
-janitor::clean_names() 
+prof_trash = read_excel("data/202409 Trash Wheel Collection Data.xlsx", na = c("NA", "", "."), sheet = "Professor Trash Wheel", n_max = 118) |>
+janitor::clean_names() |>
+add_column(trash_wheel_name = "Prof")
 
-summary(prof_trash) #106r x 13c
+prof_trash #118r x 14c [small]
 ```
 
 The Gwynnda Trash Wheel sheet has been read, cleaned, and imported as `gwynnda_trash`.
 ```{r gwynndatrash setup, include = FALSE}
-gwynnda_trash = read_excel("data/202309 Trash Wheel Collection Data.xlsx", sheet = "Gwynnda Trash Wheel", n_max = 157) |>
-janitor::clean_names() 
+gwynnda_trash = 
+  read_excel("data/202409 Trash Wheel Collection Data.xlsx", na = c("NA", "", "."), sheet = "Gwynnda Trash Wheel", n_max = 262) |>
+  janitor::clean_names() |>
+  add_column(trash_wheel_name = "Gwynnda")
 
-summary(gwynnda_trash) #157r x 12c
+gwynnda_trash #262r x 13c [med]
 ```
-
 
