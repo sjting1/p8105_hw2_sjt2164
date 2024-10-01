@@ -35,9 +35,9 @@ nyctransit_q1 #1,868 entries and 19 columns. 11 character, 2 logical and 6 doubl
 summary(nyctransit_q1)
 ```
 
-Using the `select()` function, I selected my variables of interest and converted the `entry` variable in this dataset from character (YES vs NO) to a logical variable (TRUE vs. FALSE). 
+Using the `select()` function, I selected my variables of interest and converted the `entry` variable in this dataset from character to a logical variable. 
 
-The resulting `nyctransit_q1` dataset has 19 columns and 1,868 rows. The 19 variables include 11 characters, 2 logicals, and 6 doubles. 
+The resulting `nyctransit_q1` dataset (`r ncol(nyctransit_q1)` columns x `r nrow(nyctransit_q1)` rows) has 19 variables (11 characters, 2 logicals, and 6 doubles).
 
 
 #### The 19 Variables in `nyctransit_q1`
@@ -57,7 +57,7 @@ nyctransit_fc =
       route5_fc = as.factor(route5),
       route6_fc = as.factor(route6),
       route7_fc = as.factor(route7),
-      route8_fc = as.factor(route8), # trains 1,4, and 5
+      route8_fc = as.factor(route8), # trains 1,4, and 5 
       route9_fc = as.factor(route9), # trains 2 and 5
       route10_fc = as.factor(route10), # train 3
       route11_fc = as.factor(route11), # train 7
@@ -81,4 +81,13 @@ levels(pull(nyctransit_fc,route7_fc))
 levels(pull(nyctransit_fc,entrance_type_fc))
 levels(pull(nyctransit_fc,vending_fc))
 ```
+
+In the `nyvtransit_q1` dataset, the 11 character variables include: `line` (36 different lines), `station_name` (356 different names), `route1` to `route7`, which contains specific trains that take each route, `entrance_type` (`r levels(pull(nyctransit_fc,entrance_type_fc))`), and `vending` (y/n).
+
+The 2 logical variables are `ada`, which indicates whether it is ADA compliant, and `entry`.
+
+The 6 double variables are `station_latitude`, `station_longitude`, and `route8` to `route11`. The variables for routes 8 to 11 also contains data on specific train numbers that use those routes.
+  
+The data in `nyctransit_q1` is not tidy. For example, Routes 8 to 11 were entered as doubles but specific train numbers are entered in these columns. Similarly, character variables such as `line`, `entrance_type`, `vending`, and `route1` to `route7` are categorical variables and could be converted to factors.
+
 
