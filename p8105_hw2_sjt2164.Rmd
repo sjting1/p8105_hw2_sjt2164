@@ -38,3 +38,47 @@ summary(nyctransit_q1)
 Using the `select()` function, I selected my variables of interest and converted the `entry` variable in this dataset from character (YES vs NO) to a logical variable (TRUE vs. FALSE). 
 
 The resulting `nyctransit_q1` dataset has 19 columns and 1,868 rows. The 19 variables include 11 characters, 2 logicals, and 6 doubles. 
+
+
+#### The 19 Variables in `nyctransit_q1`
+
+_Note: To see the categories in some of the character and double variables, I transformed them into factors and created the `nyctransit_fc` dataset. Then I used the `levels(pull())` function to look at the categories._
+
+```{r char to fact, include = FALSE}
+nyctransit_fc = 
+  nyctransit_q1 |>
+    mutate(
+      line_fc = as.factor(line), #mutate to see the categories
+      station_name_fc = as.factor(station_name),
+      route1_fc = as.factor(route1),
+      route2_fc = as.factor(route2),
+      route3_fc = as.factor(route3),
+      route4_fc = as.factor(route4),
+      route5_fc = as.factor(route5),
+      route6_fc = as.factor(route6),
+      route7_fc = as.factor(route7),
+      route8_fc = as.factor(route8), # trains 1,4, and 5
+      route9_fc = as.factor(route9), # trains 2 and 5
+      route10_fc = as.factor(route10), # train 3
+      route11_fc = as.factor(route11), # train 7
+      entrance_type_fc = as.factor(entrance_type),
+      vending_fc = as.factor(vending),
+      )
+
+summary(nyctransit_fc)
+```
+
+```{r levels, include = FALSE}
+levels(pull(nyctransit_fc,line_fc))
+levels(pull(nyctransit_fc,station_name_fc))
+levels(pull(nyctransit_fc,route1_fc))
+levels(pull(nyctransit_fc,route2_fc))
+levels(pull(nyctransit_fc,route3_fc))
+levels(pull(nyctransit_fc,route4_fc))
+levels(pull(nyctransit_fc,route5_fc))
+levels(pull(nyctransit_fc,route6_fc))
+levels(pull(nyctransit_fc,route7_fc))
+levels(pull(nyctransit_fc,entrance_type_fc))
+levels(pull(nyctransit_fc,vending_fc))
+```
+
