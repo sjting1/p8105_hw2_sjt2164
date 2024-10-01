@@ -6,6 +6,7 @@ _Note: This homework uses the `tidyverse` and `dplyr` libraries._
 ```{r setup, include = FALSE}
 library(tidyverse)
 library(dplyr)
+library(readxl)
 ```
 
 ## Problem 1
@@ -144,3 +145,16 @@ ada_compli #16 distinct ADA compliant stations serve A train
 ```
 
 Of the stations that serve the A train, 16 are ADA compliant.
+
+## Problem 2
+
+Problem 2 uses the _"202309 Trash Wheel Collection Data"_ xlsx file from Mr. Trash Wheel. The dataset was imported as `mr_trash`.
+
+```{r trash setup, include = FALSE}
+mr_trash = read_excel("data/202309 Trash Wheel Collection Data.xlsx")
+#585r x 16c
+
+mr_trash = janitor::clean_names(mr_trash) |>
+  select(dumpster:homes_powered)
+```
+
