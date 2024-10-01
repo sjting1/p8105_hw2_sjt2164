@@ -82,13 +82,13 @@ levels(pull(nyctransit_fc,entrance_type_fc))
 levels(pull(nyctransit_fc,vending_fc))
 ```
 
-In the `nyvtransit_q1` dataset, the 11 character variables include: `line` (36 different lines), `station_name` (356 different names), `route1` to `route7`, which contains specific trains that take each route, `entrance_type` (`r levels(pull(nyctransit_fc,entrance_type_fc))`), and `vending` (y/n).
+In the `nyvtransit_q1` dataset, the 11 character variables include: `line` (36 different lines), `station_name` (356 different names), `route1` to `route7`, `entrance_type` (`r levels(pull(nyctransit_fc,entrance_type_fc))`), and `vending` (y/n).
 
 The 2 logical variables are `ada`, which indicates whether it is ADA compliant, and `entry`.
 
-The 6 double variables are `station_latitude`, `station_longitude`, and `route8` to `route11`. The variables for routes 8 to 11 also contains data on specific train numbers that use those routes.
+The 6 double variables are `station_latitude`, `station_longitude`, and `route8` to `route11`.
   
-The data in `nyctransit_q1` is not tidy. For example, Routes 8 to 11 were entered as doubles but specific train numbers are entered in these columns. Similarly, character variables such as `line`, `entrance_type`, `vending`, and `route1` to `route7` are categorical variables and could be converted to factors.
+The data in `nyctransit_q1` is not tidy. For example, Routes 8 to 11 were entered as doubles but it is a categorical variable. Similarly, character variables such as `line`, `entrance_type`, `vending`, and `route1` to `route7` are categorical variables and could be converted to factors.
 
 #### Problem 1 Question Answers
 
@@ -110,3 +110,37 @@ nyctransit_ent = filter(nyctransit_ada, vending_fc == "NO") #36 stations with en
 summary(nyctransit_ent) #Entry: 20 FALSE and 16 TRUE
 ```
 
+#### Reformatting Data
+
+```{r reformat, include = FALSE}
+reformat = 
+  nyctransit_fc |>
+    mutate(
+      route8 = as.character(route8_fc), 
+      route9 = as.factor(route9_fc),
+      route10 = as.factor(route10_fc),
+      route11 = as.factor(route11_fc)) |>
+    pivot_longer(
+    cols = route1:route11, 
+    names_to = "route_number",
+    names_prefix = "route_number",
+    values_to = "train") |>
+    filter(train == "A"
+  ) 
+```
+
+```{r trainA stations}
+trainA_ada = distinct(reformat, station_name_fc)
+```
+
+After reformatting the data, we find that 56 distinct stations serve the A train. 
+
+```{r trainA ada}
+ada_compli = reformat |>
+    filter(ada == TRUE) |>
+    distinct(station_name)
+
+ada_compli #16 distinct ADA compliant stations serve A train
+```
+
+Of the stations that serve the A train, 16 are ADA compliant.
