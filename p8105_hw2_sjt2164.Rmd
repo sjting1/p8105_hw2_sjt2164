@@ -233,8 +233,9 @@ Problem 3 uses 3 datasets from the Great British Bake Off: _"bakers.csv", "bakes
 bakers_df = read_csv(file = "./data/gbb/bakers.csv", na = c("NA", "", ".")) |> #120x5
   janitor::clean_names() |>
   mutate(
-    series = as.factor(series) 
-  )
+    series = as.factor(series)) |>
+  separate(baker_name, into = c("baker", "baker_ln"), sep = " ")
+
 #Converted series into factor variables since it is a categorical variable.
 summary(bakers_df)
 ```
@@ -259,18 +260,17 @@ results_df = read_csv(file = "./data/gbb/results.csv", na = c("NA", "", "."), sk
     episode = as.factor(episode))
 
 summary(results_df) #1,136 x 5
+
 ```
 
 #### Summary of Data
-The 3 files have been read, cleaned with the `clean_names` function, and imported as `bakers_df` (120 x 5), `bakes_df` (548 x 5), and `results_df` (1,136 x 5) datasets. `results_df` was imported by skipping the first two rows so the dataset makes more sense.
+The 3 files have been read, cleaned with the `clean_names` function, and imported as `bakers_df` (120 x 5), `bakes_df` (548 x 5), and `results_df` (1,136 x 5) datasets. `results_df` was imported by skipping the first two rows so the dataset makes more sense. After looking at the variables, I standardized the `series` and `episode` variables to factors since they are categorical variables. I also separated the `baker_names` variable into two columns, one of which is named `baker`. This allows easier merging of the datasets later on.
 
-**Raw Variables**
+**Variables**
 
-* `bakers_df` has 3 character variables (`baker_name`, `baker_occupation`, `hometown`) and 2 doubles (`series`, `baker_age`).
-* `bakes_df` has 3 character variables (`baker`, `signature_bake`,`show_stopper`) and 2 doubles (`episode`,`series`).
-* `results_df` has 2 character variables (`baker`, `results`) and 3 doubles (`series`, `episode`, `technical`)
-
-After looking at the variables, I standardized the `series` and `episode` variables to factors since they are categorical variables.
+* `bakers_df` has 3 character variables (`baker_name`, `baker_occupation`, `hometown`) 1 factor (`series`), and 1 double (`baker_age`).
+* `bakes_df` has 3 character variables (`baker`, `signature_bake`,`show_stopper`) and 2 factors (`episode`,`series`).
+* `results_df` has 2 character variables (`baker`, `results`), 2 factors (`series`, `episode`) and 1 double (`technical`)
 
 **Key for `results` in `results_df` dataset**
 
@@ -280,3 +280,38 @@ After looking at the variables, I standardized the `series` and `episode` variab
 * WINNER = Series Winner
 * Runner-up = Series Runner up
 * WD = withdrew
+
+### Comparing datasets using `anti_join`
+
+```{r antijoin1, include = FALSE}
+bakers_bakes = anti_join(bakers_df, bakes_df)
+
+bakes_df = bakes_df |>
+  mutate(baker = gsub('"Jo"','Jo', baker)) #updated Jo
+
+bakes_bakers = anti_join(bakes_df, bakers_df) #none
+```
+
+Using the `anti_join` function and joining by `baker` and `series`, I compared the datasets with each other.
+
+* `bakers_bakes` was created to compare data between `bakers_df` and `bakes_df`. It shows that 26 bakers in `bakers_df` were absent in `bakes_df`, including Jo Wheatley. However, she is actually included in the `bakes_df` with her name in quotation marks. Thus, I updated her name in the `bakes_df` without the quotations.
+
+```{r antijoin2, include = FALSE}
+bakes_results = anti_join(bakes_df, results_df)
+
+results_df = results_df |>
+  mutate(baker = gsub('Joanne','Jo', baker)) #updated Jo
+
+results_bakes = anti_join(results_df, bakes_df) #none
+```
+
+* `bakers_results` shows that Jo was present in `bakers_df` but absent in `results_df`. This is because she is entered as "Joanne" for the second dataset. Thus, I updated her name to "Jo" in `results_df`.
+
+```{r antijoin3, include = FALSE}
+
+results_bakers = anti_join(results_df, bakers_df) #none
+
+bakers_results = anti_join(bakes_df, results_df) #none
+```
+
+* After the above updates, no entries were listed in `results_bakers`, which compares `results_df` and `bakers_df`.
