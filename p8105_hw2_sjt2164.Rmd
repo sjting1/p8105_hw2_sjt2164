@@ -315,3 +315,16 @@ bakers_results = anti_join(bakes_df, results_df) #none
 ```
 
 * After the above updates, no entries were listed in `results_bakers`, which compares `results_df` and `bakers_df`.
+
+### Merging 
+
+All three datasets have been merged to `combined_data`.
+```{r}
+first_merge =
+  left_join(bakes_df, bakers_df, by = c("series", "baker")) 
+
+Combined_data = 
+  left_join(results_df, first_merge, by = c("series", "episode", "baker")) |>
+  select(series, episode, baker, baker_ln, baker_age, baker_occupation, hometown, signature_bake, show_stopper, technical, result)
+```
+
