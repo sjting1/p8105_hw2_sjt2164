@@ -148,7 +148,7 @@ Of the stations that serve the A train, 16 are ADA compliant.
 
 ## Problem 2
 
-Problem 2 uses the _"202309 Trash Wheel Collection Data"_ xlsx file from Mr. Trash Wheel. The Mr. Trash Wheel sheet has been read, cleaned, and imported as `mr_trash`.
+Problem 2 uses the _"202409 Trash Wheel Collection Data"_ xlsx file from Mr. Trash Wheel. 
 
 ```{r mrtrash setup, include = FALSE}
 mr_trash = read_excel("data/202409 Trash Wheel Collection Data.xlsx", na = c("NA", "", "."), sheet = "Mr. Trash Wheel", n_max = 651) |>
@@ -162,7 +162,6 @@ janitor::clean_names() |>
 mr_trash #651 x 15
 ```
 
-The Professor Trash Wheel sheet has been read, cleaned, and imported as `prof_trash`.
 ```{r proftrash setup, include = FALSE}
 prof_trash = read_excel("data/202409 Trash Wheel Collection Data.xlsx", na = c("NA", "", "."), sheet = "Professor Trash Wheel", n_max = 118) |>
 janitor::clean_names() |>
@@ -172,7 +171,6 @@ add_column(trash_wheel_name = "Prof") |>
 prof_trash #118 x 14
 ```
 
-The Gwynnda Trash Wheel sheet has been read, cleaned, and imported as `gwynnda_trash`.
 ```{r gwynndatrash setup, include = FALSE}
 gwynnda_trash = 
   read_excel("data/202409 Trash Wheel Collection Data.xlsx", na = c("NA", "", "."), sheet = "Gwynnda Trash Wheel", n_max = 262) |>
@@ -187,6 +185,42 @@ gwynnda_trash #262 x 13
 Combined_Trash = 
   bind_rows(mr_trash, prof_trash, gwynnda_trash) 
 
-Combined_Trash #1,031 x 15
+Combined_Trash #1,031 x 15. Rows make sense
 ```
 
+#### Summary of Data
+3 sheets from the xlsx file (Mr. Trash Wheel, Professor Trash Wheel, Gwynnda Trash Wheel) have been read, cleaned with the `clean_names` function, and imported. 
+An additional variable `trash_wheel_name` was created for all three datasets: 
+
+* `mr. rrash` (`r nrow(mr_trash)` x `r ncol(mr_trash)`), 
+* `prof_trash` (`r nrow(prof_trash)` x `r ncol(prof_trash)`), and  
+* `gwynnda_trash` (`r nrow(gwynnda_trash)` x `r ncol(gwynnda_trash)`). 
+
+`year` was standardized to a factor variable in all three to allow later merging of the datasets. Entries in the `sports_ball` variable has been converted to integers for `mr. trash` only. 
+
+After merging, the resulting dataset `Combined_Trash` has `r nrow(Combined_Trash)` observations and `r ncol(Combined_Trash)` variables. Examples of key variables include:
+
+* `trash_wheel_name` lists the specific names of the trash wheels
+* `dumpster` the dumpster number
+*  Date is specified by the `year`, `month`, and `date` variables
+* `weight_tons` and `volume_cubic_yards` of collected trash
+* Trash categories include `plastic_bottles`, `polystyrene`, `cigarette_butts`, `glass_bottles`, `plastic_bags`, `wrappers`, `sports_balls`
+* `homes_powered`
+
+```{r weight and cigb, include = FALSE}
+trashweight_prof = 
+  prof_trash |>
+  select(weight_tons)
+
+cigbutts_gwyn = 
+  gwynnda_trash |>
+  select(cigarette_butts, month, year) |>
+  filter(year == 2022, month == "June") |>
+  select(cigarette_butts)
+
+sum(cigbutts_gwyn)
+```
+
+The total weight of trash collected by Professor Trash Wheel was `r sum(trashweight_prof)` tons.
+
+In June of 2022, Gwynnda collected a total of 1,8120 cigarette butts.
