@@ -2,7 +2,7 @@
 title: "Homework 2"
 output: github_document
 ---
-_Note: This homework uses the `tidyverse` and `dplyr` libraries._
+_Note: This homework uses the `tidyverse`, `dplyr`, and `readxl` libraries._
 ```{r setup, include = FALSE}
 library(tidyverse)
 library(dplyr)
@@ -154,19 +154,22 @@ Problem 2 uses the _"202309 Trash Wheel Collection Data"_ xlsx file from Mr. Tra
 mr_trash = read_excel("data/202409 Trash Wheel Collection Data.xlsx", na = c("NA", "", "."), sheet = "Mr. Trash Wheel", n_max = 651) |>
 janitor::clean_names() |>
   select(dumpster:homes_powered) |> 
-  mutate(sports_balls = as.integer(sports_balls)) |>
+  mutate(
+    sports_balls = as.integer(sports_balls),
+    year = as.factor(year)) |>
   add_column(trash_wheel_name = "Mr")
   
-mr_trash #651c x 15c [large]
+mr_trash #651 x 15
 ```
 
 The Professor Trash Wheel sheet has been read, cleaned, and imported as `prof_trash`.
 ```{r proftrash setup, include = FALSE}
 prof_trash = read_excel("data/202409 Trash Wheel Collection Data.xlsx", na = c("NA", "", "."), sheet = "Professor Trash Wheel", n_max = 118) |>
 janitor::clean_names() |>
-add_column(trash_wheel_name = "Prof")
+add_column(trash_wheel_name = "Prof") |>
+  mutate(year = as.factor(year))
 
-prof_trash #118r x 14c [small]
+prof_trash #118 x 14
 ```
 
 The Gwynnda Trash Wheel sheet has been read, cleaned, and imported as `gwynnda_trash`.
@@ -174,8 +177,16 @@ The Gwynnda Trash Wheel sheet has been read, cleaned, and imported as `gwynnda_t
 gwynnda_trash = 
   read_excel("data/202409 Trash Wheel Collection Data.xlsx", na = c("NA", "", "."), sheet = "Gwynnda Trash Wheel", n_max = 262) |>
   janitor::clean_names() |>
-  add_column(trash_wheel_name = "Gwynnda")
+  add_column(trash_wheel_name = "Gwynnda") |>
+  mutate(year = as.factor(year))
 
-gwynnda_trash #262r x 13c [med]
+gwynnda_trash #262 x 13
+```
+
+```{r merge1, include = FALSE}
+Combined_Trash = 
+  bind_rows(mr_trash, prof_trash, gwynnda_trash) 
+
+Combined_Trash #1,031 x 15
 ```
 
