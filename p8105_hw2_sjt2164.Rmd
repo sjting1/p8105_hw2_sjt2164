@@ -91,7 +91,7 @@ The 6 double variables are `station_latitude`, `station_longitude`, and `route8`
   
 The data in `nyctransit_q1` is not tidy. For example, Routes 8 to 11 were entered as doubles but it is a categorical variable. Similarly, character variables such as `line`, `entrance_type`, `vending`, and `route1` to `route7` are categorical variables and could be converted to factors.
 
-#### Problem 1 Question Answers
+#### Distinct Stations and ADA Compliance
 
 ```{r station, include = FALSE}
 levels(pull(nyctransit_fc,station_name_fc)) #can also use distinct function
@@ -111,7 +111,6 @@ nyctransit_ent = filter(nyctransit_ada, vending_fc == "NO") #36 stations with en
 summary(nyctransit_ent) #Entry: 20 FALSE and 16 TRUE
 ```
 
-#### Reformatting Data
 
 ```{r reformat, include = FALSE}
 reformat = 
@@ -134,7 +133,7 @@ reformat =
 trainA_ada = distinct(reformat, station_name_fc)
 ```
 
-After reformatting the data, we find that 56 distinct stations serve the A train. 
+After reformatting the data, we find that 56 distinct stations serve the A train. Of the stations that serve the A train, 16 are ADA compliant.
 
 ```{r trainA ada, include = FALSE}
 ada_compli = reformat |>
@@ -144,7 +143,6 @@ ada_compli = reformat |>
 ada_compli #16 distinct ADA compliant stations serve A train
 ```
 
-Of the stations that serve the A train, 16 are ADA compliant.
 
 ## Problem 2
 
@@ -192,9 +190,9 @@ Combined_Trash #1,031 x 15. Rows make sense
 3 sheets from the xlsx file (Mr. Trash Wheel, Professor Trash Wheel, Gwynnda Trash Wheel) have been read, cleaned with the `clean_names` function, and imported. 
 An additional variable `trash_wheel_name` was created for all three datasets: 
 
-* `mr. trash` (`r nrow(mr_trash)` x `r ncol(mr_trash)`), 
-* `prof_trash` (`r nrow(prof_trash)` x `r ncol(prof_trash)`), and  
-* `gwynnda_trash` (`r nrow(gwynnda_trash)` x `r ncol(gwynnda_trash)`). 
+* `mr. trash` (`r nrow(mr_trash)` x `r ncol(mr_trash)`)
+* `prof_trash` (`r nrow(prof_trash)` x `r ncol(prof_trash)`)
+* `gwynnda_trash` (`r nrow(gwynnda_trash)` x `r ncol(gwynnda_trash)`)
 
 `year` was standardized to a factor variable in all three to allow later merging of the datasets. Entries in the `sports_ball` variable has been converted to integers for `mr. trash` only. 
 
@@ -223,7 +221,7 @@ sum(cigbutts_gwyn)
 
 The total weight of trash collected by Professor Trash Wheel was `r sum(trashweight_prof)` tons.
 
-In June of 2022, Gwynnda collected a total of 1,8120 cigarette butts.
+In June of 2022, Gwynnda collected a total of 18,120 cigarette butts.
 
 ## Problem 3
 Problem 3 uses 3 datasets from the Great British Bake Off: _"bakers.csv", "bakes.csv",_ and _"results.csv"_.
@@ -232,8 +230,6 @@ Problem 3 uses 3 datasets from the Great British Bake Off: _"bakers.csv", "bakes
 ```{r bakers data, include = FALSE}
 bakers_df = read_csv(file = "./data/gbb/bakers.csv", na = c("NA", "", ".")) |> #120x5
   janitor::clean_names() |>
-  mutate(
-    series = as.factor(series)) |>
   separate(baker_name, into = c("baker", "baker_ln"), sep = " ")
 
 #Converted series into factor variables since it is a categorical variable.
@@ -242,10 +238,7 @@ summary(bakers_df)
 
 ```{r bakes data, include = FALSE}
 bakes_df = read_csv(file = "./data/gbb/bakes.csv", na = c("NA", "", ".")) |> #548x5
-  janitor::clean_names() |>
-  mutate(
-    series = as.factor(series),
-    episode = as.factor(episode))
+  janitor::clean_names()
 
 #Converted series and episode into factor variables since it is a categorical variable.
 
@@ -254,16 +247,13 @@ summary(bakes_df)
 
 ```{r results data, include = FALSE}
 results_df = read_csv(file = "./data/gbb/results.csv", na = c("NA", "", "."), skip = 2) |>
-  janitor::clean_names() |>
-  mutate(
-    series = as.factor(series),
-    episode = as.factor(episode))
+  janitor::clean_names()
 
 summary(results_df) #1,136 x 5
 
 ```
 
-#### Summary of Data
+##### Summary of Data
 The 3 files have been read, cleaned with the `clean_names` function, and imported as `bakers_df` (120 x 5), `bakes_df` (548 x 5), and `results_df` (1,136 x 5) datasets. `results_df` was imported by skipping the first two rows so the dataset makes more sense. After looking at the variables, I standardized the `series` and `episode` variables to factors since they are categorical variables. I also separated the `baker_names` variable into two columns, one of which is named `baker`. This allows easier merging of the datasets later on.
 
 **Variables**
@@ -272,16 +262,7 @@ The 3 files have been read, cleaned with the `clean_names` function, and importe
 * `bakes_df` has 3 character variables (`baker`, `signature_bake`,`show_stopper`) and 2 factors (`episode`,`series`).
 * `results_df` has 2 character variables (`baker`, `results`), 2 factors (`series`, `episode`) and 1 double (`technical`)
 
-**Key for `results` in `results_df` dataset**
-
-* IN = stayed in
-* OUT = Eliminated
-* STAR BAKER = Star Baker
-* WINNER = Series Winner
-* Runner-up = Series Runner up
-* WD = withdrew
-
-### Comparing datasets using `anti_join`
+##### Comparing datasets using `anti_join`
 
 ```{r antijoin1, include = FALSE}
 bakers_bakes = anti_join(bakers_df, bakes_df)
@@ -292,9 +273,9 @@ bakes_df = bakes_df |>
 bakes_bakers = anti_join(bakes_df, bakers_df) #none
 ```
 
-Using the `anti_join` function and joining by `baker` and `series`, I compared the datasets with each other.
+Using the `anti_join` function, I compared the datasets with each other.
 
-* `bakers_bakes` was created to compare data between `bakers_df` and `bakes_df`. It shows that 26 bakers in `bakers_df` were absent in `bakes_df`, including Jo Wheatley. However, she is actually included in the `bakes_df` with her name in quotation marks. Thus, I updated her name in the `bakes_df` without the quotations.
+* `bakers_bakes` (joined by `baker` and `series`) was created to compare data between `bakers_df` and `bakes_df`. It shows that 26 bakers in `bakers_df` were absent in `bakes_df`, including Jo Wheatley. However, she is actually included in the `bakes_df` with her name in quotation marks. Thus, I updated her name in the `bakes_df` without the quotations.
 
 ```{r antijoin2, include = FALSE}
 bakes_results = anti_join(bakes_df, results_df)
@@ -305,7 +286,7 @@ results_df = results_df |>
 results_bakes = anti_join(results_df, bakes_df) #none
 ```
 
-* `bakers_results` shows that Jo was present in `bakers_df` but absent in `results_df`. This is because she is entered as "Joanne" for the second dataset. Thus, I updated her name to "Jo" in `results_df`.
+* `bakers_results` (joined by `baker`, `series`, and `episodde`) shows that Jo was present in `bakers_df` but absent in `results_df`. This is because she is entered as "Joanne" for the second dataset. Thus, I updated her name to "Jo" in `results_df`.
 
 ```{r antijoin3, include = FALSE}
 
@@ -314,11 +295,11 @@ results_bakers = anti_join(results_df, bakers_df) #none
 bakers_results = anti_join(bakes_df, results_df) #none
 ```
 
-* After the above updates, no entries were listed in `results_bakers`, which compares `results_df` and `bakers_df`.
+* After the above updates, no entries were listed in `results_bakers` (joined by `baker` and `series`), which compares `results_df` and `bakers_df`.
 
-### Merging 
+##### Merging 
 
-```{r, include = FALSE}
+```{r merge_gbb, include = FALSE}
 first_merge =
   left_join(bakes_df, bakers_df, by = c("series", "baker")) 
 
@@ -332,8 +313,43 @@ combined_data =
 summary(combined_data)
 ```
 
-```{r, include = FALSE}
+```{r csv, include = FALSE}
 write_csv(combined_data, "./data/gbb/combined_data.csv")
 ```
 
 All three datasets have been merged to `combined_data` and columns rearranged. Entries without values in `results` were deleted and the file was exported as _"combined_data.csv"_ to the data folder of this repository.The dataset contains information on participants (names, age, occupation, and hometown), their  baking creations (`signature_bake`, `show_stopper`), `technical` scores, and their `result` at the end of each episode. There is a total of 10 seasons with 10 episodes each. `combined_data` has `r ncol(combined_data)` variables and `r nrow(combined_data)` observations.
+
+
+**Key for `results` in `results_df` dataset**
+
+* IN = stayed in
+* OUT = Eliminated
+* STAR BAKER = Star Baker
+* WINNER = Series Winner
+* Runner-up = Series Runner up
+* WD = withdrew
+
+
+#### Part 2
+
+```{r}
+winner_starbaker = combined_data |>
+  select(series:baker_first_name, technical, result) |>
+  mutate(result = as.factor(result)) |>
+  filter(series > 4 & (result == "STAR BAKER" | result == "WINNER"))
+
+summary(winner_starbaker) #54 star bakers and 6 winners
+
+bakers_5_to_10 = distinct(winner_starbaker,baker_first_name) #32 bakers
+
+star_bakers = winner_starbaker |>
+  filter(result == "STAR BAKER")
+
+summary(combined_data) #1-13 for technical
+
+summary(star_bakers) #1 - 19 star bakers; range: 1-8
+```
+
+There are 54 Star Bakers and 6 Winners out of the 32 bakers who participated in Series 5 to 10. After looking at the data, I noticed that the winners in these series had either 1 or 2 for `technical`. The star bakers had a range of 1 to 8 for `technical` with 19/54 (35.19%) in 1. The range for the values in `technical` in the `combined_data` is from 1 to 13. Bakers with a smaller value for `technical` may have a greater chance of becoming star bakers.
+
+
