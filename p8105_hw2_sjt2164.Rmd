@@ -350,7 +350,17 @@ summary(combined_data) #1-13 for technical
 summary(star_bakers) #1 - 19 star bakers; range: 1-8
 ```
 
-**Table**
+**Table** 
+
+The table below shows the first names of the bakers and whether they were a star baker or the winner in each series (5-10) and corresponding episode (1-10). 
+
+```{r, echo = FALSE}
+winner_starb = winner_starbaker |>
+  select(series:baker_first_name, result)
+
+knitr::kable(winner_starb, format = "html")
+```
+
 
 There are 54 Star Bakers and 6 Winners out of the 32 bakers who participated in Series 5 to 10. After looking at the data, I noticed that the winners in these series had either 1 or 2 for `technical`. The star bakers had a range of 1 to 8 for `technical` with 19/54 (35.19%) in 1. The range for the values in `technical` in the `combined_data` is from 1 to 13. Bakers with a smaller value for `technical` may have a greater chance of becoming star bakers.
 
