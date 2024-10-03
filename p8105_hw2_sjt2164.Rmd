@@ -350,6 +350,42 @@ summary(combined_data) #1-13 for technical
 summary(star_bakers) #1 - 19 star bakers; range: 1-8
 ```
 
+**Table**
+
 There are 54 Star Bakers and 6 Winners out of the 32 bakers who participated in Series 5 to 10. After looking at the data, I noticed that the winners in these series had either 1 or 2 for `technical`. The star bakers had a range of 1 to 8 for `technical` with 19/54 (35.19%) in 1. The range for the values in `technical` in the `combined_data` is from 1 to 13. Bakers with a smaller value for `technical` may have a greater chance of becoming star bakers.
 
+
+```{r}
+viewers = read.csv("./data/gbb/viewers.csv", na = c("NA", ".", "")) |>
+  janitor::clean_names()
+
+viewers_new = viewers |>
+  pivot_longer(
+    cols = series_1:series_10, 
+    names_to = "series", 
+    names_prefix = "series_", values_to = "viewer") |>
+    select(series, episode, viewer) |>
+    mutate(series = as.numeric(series)) |> #series was character
+    arrange(series, episode)
+
+viewers_new
+```
+
+_"viewers.csv"_ has been imported, cleaned with `clean_names` function, and tidied using `mutate()` to change `series` into a double and `pivot_longer()` to create `series` and `viewer` columns. The resulting dataset is named `viewers`.
+
+```{r viewers}
+head(viewers, n = 10)
+
+viewers_S1 = viewers_new |>
+  filter(series == 1) #10 episodes in season 1
+
+summary(viewers_S1) #mean is 2.77
+
+viewers_S5 = viewers_new |>
+  filter(series == 5) #10 episodes in season 5
+
+summary(viewers_S5) #mean is 10.039
+```
+
+What was the average viewership in Season 1 is 2.77. In Season 5, it was 10.039.
 
