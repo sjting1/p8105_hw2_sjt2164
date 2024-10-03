@@ -332,7 +332,7 @@ All three datasets have been merged to `combined_data` and columns rearranged. E
 
 #### Part 2
 
-```{r}
+```{r, include = FALSE}
 winner_starbaker = combined_data |>
   select(series:baker_first_name, technical, result) |>
   mutate(result = as.factor(result)) |>
